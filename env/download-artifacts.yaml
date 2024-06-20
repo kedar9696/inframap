@@ -1,0 +1,62 @@
+- defaultTab: nodes
+  description: ''
+  excludeFilterUncheck: true
+  executionEnabled: true
+  group: env
+  id: a39946da-d776-425b-8fb9-9956efc199d2
+  loglevel: INFO
+  name: download-artifacts
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: .*
+    filterExclude: localhost
+  nodesSelectedByDefault: true
+  options:
+  - description: eg:- 24R4
+    label: Release Version
+    name: repo_version
+    required: true
+  - description: e.g. Select artifact type:- Packaging zip or Release bundle tar
+    enforced: true
+    label: Artifact Type
+    name: artifact_bundle_type
+    required: true
+    values:
+    - Packaging-Zip
+    - Release-Bundle-tar
+    valuesListDelimiter: ','
+  - description: |-
+      Skip for Release-Bundle-tar.....
+      Build Number of Zip e.g.240215453
+    label: Build Number
+    name: build_no
+  - description: Version eg:- 11.4.0
+    label: Version
+    name: version
+    required: true
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "service_version: ${option.version} \nrepo_version: ${option.repo_version}\n\
+          build_number: ${option.build_no}\nartifact_bundle_type: ${option.artifact_bundle_type}"
+        ansible-playbook: playbook-download-artifacts.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: a39946da-d776-425b-8fb9-9956efc199d2
+

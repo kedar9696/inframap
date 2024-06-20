@@ -1,0 +1,36 @@
+- defaultTab: nodes
+  description: ''
+  executionEnabled: true
+  group: env
+  id: 411028fd-fa00-4716-9bef-6f8bc2194b52
+  loglevel: INFO
+  name: base
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: .*
+    filterExclude: localhost
+  nodesSelectedByDefault: true
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-playbook: playbook-base.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: 411028fd-fa00-4716-9bef-6f8bc2194b52
+

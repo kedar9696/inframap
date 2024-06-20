@@ -1,0 +1,60 @@
+- defaultTab: nodes
+  description: ''
+  executionEnabled: true
+  group: env
+  id: 83fcca6b-8a70-47c3-b7d3-c910e7283bb3
+  loglevel: INFO
+  name: provision-rel-bundle
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: .*
+    filterExclude: localhost
+  nodesSelectedByDefault: true
+  options:
+  - description: eg:- 24R4
+    label: Release Version
+    name: repo_version
+  - description: 'eg: 11.1.0'
+    label: Version
+    name: version
+    required: true
+  - label: Secondary Storage
+    name: secondary_storage
+    required: true
+    value: Crate
+  - description: DB Action- Select createdb in case of fresh installation
+    enforced: true
+    label: dbAction
+    name: dbAction
+    value: patchdb
+    values:
+    - createdb
+    - patchdb
+    valuesListDelimiter: ','
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "repo_version: ${option.repo_version}\nservice_version:\
+          \ ${option.version} \nsecondary_storage: ${option.secondary_storage}\ndbAction:\
+          \ ${option.dbAction}"
+        ansible-playbook: playbook-provision-rel-bundle.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: 83fcca6b-8a70-47c3-b7d3-c910e7283bb3
+

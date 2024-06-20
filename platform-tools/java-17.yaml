@@ -1,0 +1,68 @@
+- defaultTab: nodes
+  description: Install or Uninstall java-17 online or offline
+  executionEnabled: true
+  group: platform-tools
+  id: 0556f0f7-ab53-458f-9b15-55c178938d07
+  loglevel: INFO
+  name: java-17
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'tags: java_hosts'
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        attachLog: true
+        attachLogInline: true
+        recipients: ${globals.rundeck-email-notif}
+    onsuccess:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+  notifyAvgDurationThreshold: null
+  options:
+  - enforced: true
+    label: Action
+    name: Action
+    required: true
+    sortValues: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/action.json
+  - description: Installation Type
+    enforced: true
+    label: InstallationType
+    name: InstallationType
+    required: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/installationType.json
+  - description: Version
+    enforced: true
+    label: Version
+    name: version
+    required: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/tools-java-17.json
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "operation: ${option.Action} \nmode: ${option.InstallationType}\
+          \ \nartifact_build_ver: ${option.version}"
+        ansible-playbook: playbook-java-17.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: 0556f0f7-ab53-458f-9b15-55c178938d07
+

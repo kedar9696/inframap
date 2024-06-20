@@ -1,0 +1,79 @@
+- defaultTab: nodes
+  description: ''
+  executionEnabled: true
+  group: env
+  id: a9a3b29f-ca7b-43b9-b991-40606f5f19e4
+  loglevel: INFO
+  name: provision-packaging-zip
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: .*
+    filterExclude: localhost
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+    onsuccess:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+  notifyAvgDurationThreshold: null
+  options:
+  - description: eg:- 24R4
+    label: Release Version
+    name: repo_version
+    required: true
+  - description: Version eg:- 11.1.0
+    label: Version
+    name: version
+  - description: Build Number of Zip e.g.240215453
+    label: Build Number
+    name: build_no
+  - label: Secondary Storage
+    name: secondary_storage
+    required: true
+    value: Crate
+    values:
+    - None
+    - Crate
+    valuesListDelimiter: ','
+  - description: DB Action- Select createdb in case of fresh installation
+    enforced: true
+    label: dbAction
+    name: dbAction
+    value: patchdb
+    values:
+    - createdb
+    - patchdb
+    valuesListDelimiter: ','
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "service_version: ${option.version} \nrepo_version: ${option.repo_version}\n\
+          build_number: ${option.build_no}\nsecondary_storage: ${option.secondary_storage}\n\
+          dbAction: ${option.dbAction}"
+        ansible-playbook: playbook-provision-pkgzip.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: a9a3b29f-ca7b-43b9-b991-40606f5f19e4
+

@@ -1,0 +1,79 @@
+- defaultTab: nodes
+  description: Install or Uninstall gra-hadoop-spark online or offline
+  executionEnabled: true
+  group: platform-tools
+  id: b48ba4d5-176b-4abb-826d-e99cdfa056d5
+  loglevel: INFO
+  name: gra-hadoop-spark
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'tags: hadoop_master_host tags:hadoop_slave_host'
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+    onsuccess:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+  notifyAvgDurationThreshold: null
+  options:
+  - enforced: true
+    label: Action
+    name: action
+    required: true
+    value: install
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/action.json
+  - enforced: true
+    label: Deployment Type
+    name: deploymentType
+    required: true
+    value: gra-services
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/deploymentType.json
+  - enforced: true
+    label: Installation Type
+    name: installationType
+    required: true
+    value: online
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/installationType.json
+  - description: 'version option      '
+    label: version
+    name: version
+    required: true
+  - description: ConfigureFirewall Option
+    enforced: true
+    label: configureFirewall
+    name: configureFirewall
+    value: 'false'
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/configureFirewall.json
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "operation: ${option.action} \nmode: ${option.installationType}\
+          \ \ndeploymentType: ${option.deploymentType} \nartifact_build_ver: ${option.version}\n\
+          configureFirewall: ${option.configureFirewall}"
+        ansible-playbook: playbook-gra-hadoop-spark.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: b48ba4d5-176b-4abb-826d-e99cdfa056d5
+

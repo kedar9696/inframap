@@ -1,0 +1,110 @@
+- defaultTab: nodes
+  description: ''
+  executionEnabled: true
+  group: env
+  id: 6468b179-87ac-48e2-a0f4-efd9b9c06a09
+  loglevel: INFO
+  name: provision-all
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: .*
+    filterExclude: localhost
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+    onsuccess:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+  notifyAvgDurationThreshold: null
+  options:
+  - delimiter: ','
+    enforced: true
+    label: AnsibleTags
+    multivalued: true
+    name: tags
+    sortValues: true
+    value: all
+    values:
+    - all
+    - database
+    - gra-services
+    - platform-tools
+    valuesListDelimiter: ','
+  - description: Version eg:- 11.1.0
+    label: Version
+    name: version
+    required: true
+  - description: build_no eg:- "24125412"
+    label: Build number
+    name: build_no
+  - enforced: true
+    label: rpm Mode
+    name: rpm_mode
+    required: true
+    value: online
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/installationType.json
+  - enforced: true
+    label: rpm mode
+    name: platform_tool_mode
+    required: true
+    value: online
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/installationType.json
+  - enforced: true
+    label: Secondary Storage
+    name: secondary_storage
+    required: true
+    value: Crate
+    values:
+    - Crate
+    - None
+    valuesListDelimiter: ','
+  - description: DB Action- Select createdb in case of fresh installation
+    enforced: true
+    label: dbAction
+    name: dbAction
+    value: patchdb
+    values:
+    - createdb
+    - patchdb
+    valuesListDelimiter: ','
+  - description: ConfigureFirewall Option
+    enforced: true
+    label: configureFirewall
+    name: configureFirewall
+    required: true
+    value: 'false'
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/configureFirewall.json
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "tags: ${option.tags}\nservice_version: ${option.version}\
+          \ \nbuild_no: ${option.build_no}\nrpm_mode: ${option.rpm_mode}\nplatform_tool_mode:\
+          \ ${option.platform_tool_mode}\ndbAction: ${option.dbAction}\nsecondary_storage:\
+          \ ${option.secondary_storage}\nconfigureFirewall: ${option.configureFirewall}"
+        ansible-playbook: playbook-provision-all.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: 6468b179-87ac-48e2-a0f4-efd9b9c06a09
+

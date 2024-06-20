@@ -1,0 +1,86 @@
+- defaultTab: nodes
+  description: Install or Uninstall Nagios-Client online or offline
+  executionEnabled: true
+  group: platform-tools
+  id: 5637a814-aff5-4a29-b779-20d424d3c0c6
+  loglevel: INFO
+  name: nagios-server
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'tags: nagios_client_hosts'
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+    onsuccess:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+  notifyAvgDurationThreshold: null
+  options:
+  - enforced: true
+    label: Action
+    name: Action
+    required: true
+    sortValues: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/action.json
+  - description: Installation Type
+    enforced: true
+    label: InstallationType
+    name: InstallationType
+    required: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/installationType.json
+  - description: ConfigureFirewall Option
+    enforced: true
+    label: configureFirewall
+    name: configureFirewall
+    required: true
+    value: 'true'
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/configureFirewall.json
+  - description: Nagios-Core-Version
+    enforced: true
+    label: Nagios-Core-Version
+    name: Nagios-Core-Version
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/tools-nagios-server-core.json
+  - description: 'Nagios Plugin Version '
+    enforced: true
+    label: Nagios-plugin
+    name: Nagios-plugin
+    required: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/tools-nagios-server-plugin.json
+  - description: Nrpe-Version
+    enforced: true
+    label: Nrpe-Version
+    name: Nrpe-Version
+    required: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/tools-nagios-server-nrpe.json
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "operation: ${option.Action} \nmode: ${option.InstallationType}\
+          \ \nartifact_build_ver: ${option.version}\nconfigureFirewall: ${option.configureFirewall}"
+        ansible-playbook: playbook-nagios-server.yml
+        ansible-ssh-passphrase-option: option.password
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: 5637a814-aff5-4a29-b779-20d424d3c0c6
+

@@ -1,0 +1,66 @@
+- defaultTab: nodes
+  description: Install or Uninstall python online or offline
+  executionEnabled: true
+  group: platform-tools
+  id: 264860ce-5bed-4b9c-886d-90942c8bcecb
+  loglevel: INFO
+  name: gra-python
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'tags: gra_python_hosts'
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+    onsuccess:
+      email:
+        attachLog: true
+        attachLogInFile: true
+        recipients: ${globals.rundeck-email-notif}
+  notifyAvgDurationThreshold: null
+  options:
+  - enforced: true
+    label: Action
+    name: Action
+    required: true
+    sortValues: true
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/action.json
+  - description: Installation Type
+    enforced: true
+    label: Installation Type
+    name: InstallationType
+    required: true
+    value: online
+    valuesUrl: file:${globals.gra-playbooks-path}/rundeck/options/installationType.json
+  - description: Version eg:- 23R6
+    label: Version
+    name: version
+    required: true
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-base-dir-path: ${globals.gra-playbooks-path}
+        ansible-become: 'false'
+        ansible-disable-limit: 'false'
+        ansible-extra-vars: "operation: ${option.Action} \nmode: ${option.InstallationType}\
+          \ \nartifact_build_ver: ${option.version}"
+        ansible-playbook: playbook-gra-python.yml
+        ansible-ssh-use-agent: 'false'
+      nodeStep: false
+      type: com.batix.rundeck.plugins.AnsiblePlaybookWorkflowStep
+    keepgoing: false
+    strategy: node-first
+  uuid: 264860ce-5bed-4b9c-886d-90942c8bcecb
+
