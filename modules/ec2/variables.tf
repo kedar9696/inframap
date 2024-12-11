@@ -70,11 +70,6 @@ variable "ebs_throughput" {
   type        = number
 }
 
-# variable "kms_key_id" {
-#   description = "kms key id"
-#   type        = string
-# }
-
 variable "instance_count" {
   description = "The number of EC2 instances to launch "
   type        = number

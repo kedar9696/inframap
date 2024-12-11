@@ -11,10 +11,10 @@ terraform {
 module "mtr_bastion_instance" {
   source                = "./modules/ec2"
   instance_type         = "t2.micro"
-  security_group_id     = ["<your-security-group-id>"]
+  security_group_id     = ["<security-group-id-here>"]
   subnet_id             = "<subnet-id-here>"
   instance_count        = 1
-  key_name              = "hulk-aws-keys"
+  key_name              = "<ssh-key-name-here>"
   public_ip             = true
   ebs_volume_size       = 30
   ebs_volume_type       = "gp3"

@@ -13,7 +13,6 @@ data "aws_ami" "server_ami" {
   }
 }
 
-
 resource "aws_instance" "server" {
   ami                         = data.aws_ami.server_ami.id
   instance_type               = var.instance_type
@@ -32,16 +31,16 @@ resource "aws_instance" "server" {
         systemctl enable httpd
         echo "<h1>Terraform Provision Server Details</h1><p><strong>Hostname:</strong> $(hostname)</p><p><strong>IP Address:</strong> $(hostname -I | cut -d" " -f1)</p>" >> /var/www/html/index.html
     EOF
-  # root_block_device {
-  #   volume_size           = var.ebs_volume_size
-  #   volume_type           = var.ebs_volume_type
-  #   delete_on_termination = var.delete_on_termination
-  #   iops                  = var.ebs_iops
-  #   throughput            = var.ebs_throughput
-  #   tags = {
-  #     "Name" = "root_ebs_vol"
-  #   }
-  # }
+  root_block_device {
+    volume_size           = var.ebs_volume_size
+    volume_type           = var.ebs_volume_type
+    delete_on_termination = var.delete_on_termination
+    iops                  = var.ebs_iops
+    throughput            = var.ebs_throughput
+    tags = {
+      "Name" = "root_ebs_vol"
+    }
+  }
 
   tags = merge(
     {
