@@ -44,7 +44,7 @@ resource "aws_instance" "server" {
 
   tags = merge(
     {
-      Name = "${var.env_name}-${count.index + 1}"
+      Name = "${var.env_name}-${count.index + 2}"
     },
     var.ec2_tags
   )
